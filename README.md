@@ -28,7 +28,7 @@
 ### 安装宿主机工具
 
 ```bash
-sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev libglib2.0-dev
+sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev libglib2.0-dev expect libusb-1.0-0-dev libftdi-dev
 ```
 
 ### 编译工具链
@@ -52,12 +52,14 @@ make report-newlib
 
 ### 编译qemu虚拟机
 
+> 世界上在上一步中，已经编译好了两个qemu虚拟机，分别是`qemu-riscv32` 和 `qemu-riscv64` ，这里编译带操作系统的版本，即qemu-system-riscv32或者qemu-system-riscv64
+
 ```bash
 # 创建编译目录
 mkdir -p qemu/build
 cd qemu/build
 # 配置
-../../riscv-gnu-toolchain/riscv-qemu/configure --prefix=/home/maoshengrong/SUDA_RISCV/qemu/
+../../riscv-gnu-toolchain/riscv-qemu/configure --prefix=/home/maoshengrong/SUDA_RISCV/qemu/ --target-list=riscv32-softmmu
 # 编译
 make -j4
 # 安装
@@ -71,6 +73,19 @@ make install
 git submodule add https://github.com/riscv/riscv-openocd.git riscv-openocd
 # 初始化子模块
 git submodule update --init --recursive
+# 生成configure文件
+cd riscv-openocd
+./bootstrap
+cd ..
+# 创建编译目录
+mkdir -p openocd/build
+cd openocd/build
+# 配置
+../../riscv-openocd/configure --prefix=/home/maoshengrong/SUDA_RISCV/openocd/
+# 编译
+make -j4
+# 安装
+make install
 ```
 
 
